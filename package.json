@@ -1,0 +1,54 @@
+{
+  "private": true,
+  "name": "homebridge-deconz-converter",
+  "displayName": "Homebridge Deconz Converter",
+  "version": "0.0.1",
+  "description": "Homebridge plugin for converting Deconz roller shutters interpreted as light into Homekit Window Covering type.",
+  "author": "Pierre Lavalley",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pirstone/homebridge-deconz-converter.git"
+  },
+  "bugs": {
+    "url": "git+https://github.com/pirstone/homebridge-deconz-converter.git/issues"
+  },
+  "engines": {
+    "node": ">=14.18.1",
+    "homebridge": ">=1.3.5"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "NODE_TLS_REJECT_UNAUTHORIZED=0 homebridge -D -P .",
+    "start:watch": "nodemon --ext \"ts,tsx\" --watch \"src/\" --exec \"npm start\"",
+    "lint": "eslint src/**.ts --max-warnings=0",
+    "clean": "rm -rf .homebridge/persist/* .homebridge/accessories/*",
+    "watch": "npm run build && npm link && nodemon",
+    "build": "rimraf ./dist && tsc",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "deconz",
+    "phoscon",
+    "conbee",
+    "dresden-elektronik",
+    "dresdenelektronik",
+    "roller-shutter",
+    "window-covering"
+  ],
+  "devDependencies": {
+    "@types/node": "^16.10.9",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.1",
+    "homebridge": "^1.3.5",
+    "nodemon": "^2.0.13",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "axios": "^0.24.0"
+  }
+}

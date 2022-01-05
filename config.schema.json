@@ -1,0 +1,39 @@
+{
+  "pluginAlias": "HomebridgeDeconzConverter",
+  "pluginType": "platform",
+  "singular": true,
+  "schema": {
+    "host": {
+      "title": "Host",
+      "type": "string",
+      "required": true,
+      "default": "http://127.0.0.1",
+      "description": "Precise protocol before (http or https)"
+    },
+    "apiKey": {
+      "title": "API Key",
+      "description": "To see how to get you API key, visit: https://dresden-elektronik.github.io/deconz-rest-doc/getting_started/#acquire-an-api-key",
+      "type": "string",
+      "required": true
+    },
+    "rollerShutters": {
+      "type": "array",
+      "items": {
+        "title": "Roller Shutters",
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "title": "Name",
+            "type": "string"
+          },
+          "uniqueId": {
+            "title": "Unique ID",
+            "type": "string",
+            "placeholder": "00:00:00:00:00:00:00:00-01",
+            "description": "To see how to list all your 'lights' and get their `uniqueId`, visit: https://dresden-elektronik.github.io/deconz-rest-doc/getting_started/#get-a-list-of-all-lights"
+          }
+        }
+      }
+    }
+  }
+}
