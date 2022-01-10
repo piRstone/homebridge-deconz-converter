@@ -7,12 +7,23 @@
       "title": "Host",
       "type": "string",
       "required": true,
-      "default": "http://127.0.0.1",
-      "description": "Precise protocol before (http or https)"
+      "default": "127.0.0.1"
+    },
+    "useHTTPS": {
+      "title": "Use HTTPS",
+      "description": "Is your host protected over HTTPS?",
+      "type": "boolean",
+      "default": false
     },
     "apiKey": {
       "title": "API Key",
       "description": "To see how to get you API key, visit: https://dresden-elektronik.github.io/deconz-rest-doc/getting_started/#acquire-an-api-key",
+      "type": "string",
+      "required": true
+    },
+    "port": {
+      "title": "WebSocket Port",
+      "description": "To see how to get your WebSocket Port, visit: https://dresden-elektronik.github.io/deconz-rest-doc/endpoints/websocket/",
       "type": "string",
       "required": true
     },

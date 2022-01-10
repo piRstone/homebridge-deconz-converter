@@ -4,6 +4,9 @@ import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
 import { RollerShutterConfig } from './typing/rollerShutter';
 import { RollerShutterAccessory } from './accessories/rollerShutter';
 import HttpClient from './httpClient';
+import WSClient from './wsClient';
+import { DeconzConverterConfig } from './typing/platformTypes';
+import { WebSocket } from 'ws';
 
 /**
  * HomebridgePlatform
@@ -14,6 +17,7 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
   public readonly Service: typeof Service = this.api.hap.Service;
   public readonly Characteristic: typeof Characteristic = this.api.hap.Characteristic;
   public readonly client: HttpClient;
+  public readonly wsClient: WebSocket;
 
   // This is used to track restored cached accessories
   public readonly accessories: PlatformAccessory[] = [];
@@ -26,11 +30,17 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
     this.log.debug('Finished initializing platform:', this.config.name);
 
     // Instantiate httpClient
-    const { host, apiKey } = this.config;
+    const { host, useHTTPS, apiKey, port } = this.config as DeconzConverterConfig;
     if (!host || !apiKey) {
       this.log.error('No host or apiKey found. Please fill configuration');
     }
-    this.client = new HttpClient(host, apiKey);
+    this.client = new HttpClient(host, useHTTPS, apiKey);
+
+    try {
+      this.wsClient = new WSClient(host, port).connect();
+    } catch (e) {
+      throw new Error(`Cannot connect to websocket: ${e}`);
+    }
 
     this.api.on(APIEvent.DID_FINISH_LAUNCHING, () => {
       log.debug('Executed didFinishLaunching callback');

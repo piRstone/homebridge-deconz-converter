@@ -3,9 +3,10 @@ import axios, { AxiosInstance } from 'axios';
 export default class HttpClient {
   httpClient: AxiosInstance;
 
-  constructor(host: string, apiKey: string) {
+  constructor(host: string, useHTTPS: boolean, apiKey: string) {
+    const protocol = useHTTPS ? 'https://' : 'http://';
     this.httpClient = axios.create({
-      baseURL: `${host}/api/${apiKey}`,
+      baseURL: `${protocol}${host}/api/${apiKey}`,
       headers: {
         'accept': 'application/json',
       },
