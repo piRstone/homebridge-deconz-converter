@@ -20,4 +20,8 @@ export default class HttpClient {
   async updateLightBrightness(bri: number, uniqueId: string) {
     return this.httpClient.put(`/lights/${uniqueId}/state`, { bri });
   }
+
+  async setLightOn(uniqueId: string) {
+    return this.httpClient.put(`/lights/${uniqueId}/state`, { on: true });
+  }
 }

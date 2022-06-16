@@ -63,7 +63,7 @@ export class RollerShutterAccessory {
   }
 
   async getPositionState(callback: NodeCallback<CharacteristicValue>) {
-    this.platform.log.info(`Get PositionState for ${this.accessory.context.device.displayName}`);
+    this.platform.log.debug(`Get PositionState for ${this.accessory.context.device.displayName}`);
     try {
       const nextValue = this.platform.Characteristic.PositionState.STOPPED;
       callback(null, nextValue);
@@ -73,7 +73,7 @@ export class RollerShutterAccessory {
   }
 
   async getTargetPosition(callback: NodeCallback<CharacteristicValue>) {
-    this.platform.log.info(`Get TargetPosition for ${this.accessory.context.device.displayName}`);
+    this.platform.log.debug(`Get TargetPosition for ${this.accessory.context.device.displayName}`);
     try {
       const response = await this.platform.client.getLightByUniqueId(this.accessory.context.device.uniqueId);
       const device = response.data as Light;

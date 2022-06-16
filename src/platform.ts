@@ -2,7 +2,9 @@ import { API, APIEvent, DynamicPlatformPlugin, Logger, PlatformAccessory, Platfo
 
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
 import { RollerShutterConfig } from './typing/rollerShutter';
+import { NodonMultifonctionsConfig } from './typing/nodonMultifonctions';
 import { RollerShutterAccessory } from './accessories/rollerShutter';
+import { NodonMultifonctionsAccessory } from './accessories/nodonMultifonctions';
 import HttpClient from './httpClient';
 import WSClient from './wsClient';
 import { DeconzConverterConfig } from './typing/platformTypes';
@@ -61,7 +63,8 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
   }
 
   discoverDevices() {
-    const rollerShutters: RollerShutterConfig[] = this.config.rollerShutters;
+    const rollerShutters: RollerShutterConfig[] = this.config.rollerShutters ?? [];
+    const nodonMultifonctions: NodonMultifonctionsConfig[] = this.config.nodonMultifonctions ?? [];
 
     for (const rollerShutter of rollerShutters) {
       const uuid = this.api.hap.uuid.generate(rollerShutter.uniqueId);
@@ -80,6 +83,28 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
         accessory.context.device = rollerShutter;
 
         new RollerShutterAccessory(this, accessory);
+
+        this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
+      }
+    }
+
+    for (const multifonctionsModule of nodonMultifonctions) {
+      const uuid = this.api.hap.uuid.generate(multifonctionsModule.uniqueId);
+
+      const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
+
+      if (existingAccessory) {
+        this.log.info('Restoring existing NodOn multifonctions module from cache:', existingAccessory.displayName);
+
+        new NodonMultifonctionsAccessory(this, existingAccessory);
+      } else {
+        this.log.info('Adding new NodOn multifonctions module shutter:', multifonctionsModule.displayName);
+
+        const accessory = new this.api.platformAccessory(multifonctionsModule.displayName, uuid);
+
+        accessory.context.device = multifonctionsModule;
+
+        new NodonMultifonctionsAccessory(this, accessory);
 
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
       }
