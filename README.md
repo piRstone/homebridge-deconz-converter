@@ -10,7 +10,10 @@
 
 This plugin is used to convert deCONZ accessories that are not light into their correct HomeKit type.
 
-Only **roller shutters** are converted for now.
+Accessories converted :
+
+- Roller shutters
+- NodOn Multifonctions module
 
 ## Configuration
 
