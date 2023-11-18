@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.4.0 (2023-11-18)
+
+### Added
+
+- Handle Contact Sensors devices
+
 ## 0.3.0 (2022-06-16)
 
 ### Added

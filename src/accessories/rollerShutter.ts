@@ -8,7 +8,7 @@ import {
 } from 'homebridge';
 import { DeconzConverterPlatform } from '../platform';
 import { Light } from '../typing/lightState';
-import { DeconzEvent, DeconzEventResourceType, DeconzEventType } from '../typing/rollerShutter';
+import { DeconzEvent, DeconzEventResourceType, DeconzEventType } from '../typing/deconzEvent';
 import { briToPercents, percentsToBri } from '../utils/briPercentsConverter';
 
 

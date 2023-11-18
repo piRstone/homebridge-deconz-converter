@@ -9,6 +9,8 @@ import HttpClient from './httpClient';
 import WSClient from './wsClient';
 import { DeconzConverterConfig } from './typing/platformTypes';
 import { WebSocket } from 'ws';
+import { ContactSensorConfig } from './typing/contactSensor';
+import { ContactSensorAccessory } from './accessories/contactSensor';
 
 /**
  * HomebridgePlatform
@@ -65,6 +67,7 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
   discoverDevices() {
     const rollerShutters: RollerShutterConfig[] = this.config.rollerShutters ?? [];
     const nodonMultifonctions: NodonMultifonctionsConfig[] = this.config.nodonMultifonctions ?? [];
+    const contactSensors: ContactSensorConfig[] = this.config.contactSensors ?? [];
 
     for (const rollerShutter of rollerShutters) {
       const uuid = this.api.hap.uuid.generate(rollerShutter.uniqueId);
@@ -98,13 +101,38 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
 
         new NodonMultifonctionsAccessory(this, existingAccessory);
       } else {
-        this.log.info('Adding new NodOn multifonctions module shutter:', multifonctionsModule.displayName);
+        this.log.info('Adding new NodOn multifonctions module:', multifonctionsModule.displayName);
 
         const accessory = new this.api.platformAccessory(multifonctionsModule.displayName, uuid);
 
         accessory.context.device = multifonctionsModule;
 
         new NodonMultifonctionsAccessory(this, accessory);
+
+        this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
+      }
+    }
+
+    for (const contactSensor of contactSensors) {
+      const uuid = this.api.hap.uuid.generate(contactSensor.uniqueId);
+
+      const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
+
+      if (existingAccessory) {
+        this.log.info(
+          'Restoring existing Contact Sensor from cache:',
+          existingAccessory.displayName,
+        );
+
+        new ContactSensorAccessory(this, existingAccessory);
+      } else {
+        this.log.info('Adding new Contact Sensor:', contactSensor.displayName);
+
+        const accessory = new this.api.platformAccessory(contactSensor.displayName, uuid);
+
+        accessory.context.device = contactSensor;
+
+        new ContactSensorAccessory(this, accessory);
 
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
       }

@@ -1,7 +1,7 @@
 {
   "name": "homebridge-deconz-converter",
   "displayName": "Homebridge Deconz Converter",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Homebridge plugin for converting Deconz roller shutters interpreted as light into Homekit Window Covering type.",
   "author": "Pierre Lavalley",
   "license": "Apache-2.0",
