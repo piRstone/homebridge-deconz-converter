@@ -24,4 +24,8 @@ export default class HttpClient {
   async setLightOn(uniqueId: string) {
     return this.httpClient.put(`/lights/${uniqueId}/state`, { on: true });
   }
+
+  async getSensorState(uniqueId: string) {
+    return this.httpClient.get(`/sensors/${uniqueId}`);
+  }
 }
