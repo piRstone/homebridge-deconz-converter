@@ -59,15 +59,16 @@ You can use `watch` to link the plugin to Homebridge and rebuild on each change.
 npm run watch
 ```
 
-Run in a separate terminal the Homebridge server:
+Install globally Hombridge
 
 ```
-npm run start
+npm i -g homebridge
 ```
 
-Then, if you wan to check the configuration in the Homebridge GUI, you can run in another terminal and **in the plugin directory**:
+Then run in a separate terminal the Homebridge server with the following parameters:
 
 ```shell
-$ npm install -g homebridge-config-ui-x
-homebridge-deconz-converter$ homebridge-config-ui-x
+$ homebridge -D -I
 ```
+
+Access to the Homebridge GUI at http://localhost:8080

@@ -1,4 +1,13 @@
-import { API, APIEvent, DynamicPlatformPlugin, Logger, PlatformAccessory, PlatformConfig, Service, Characteristic } from 'homebridge';
+import {
+  API,
+  APIEvent,
+  DynamicPlatformPlugin,
+  Logger,
+  PlatformAccessory,
+  PlatformConfig,
+  Service,
+  Characteristic,
+} from 'homebridge';
 
 import { PLATFORM_NAME, PLUGIN_NAME } from './settings';
 import { RollerShutterConfig } from './typing/rollerShutter';
@@ -26,11 +35,7 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
   // This is used to track restored cached accessories
   public readonly accessories: PlatformAccessory[] = [];
 
-  constructor(
-    public readonly log: Logger,
-    public readonly config: PlatformConfig,
-    public readonly api: API,
-  ) {
+  constructor(public readonly log: Logger, public readonly config: PlatformConfig, public readonly api: API) {
     this.log.debug('Finished initializing platform:', this.config.name);
 
     // Instantiate httpClient
@@ -42,12 +47,13 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
 
     try {
       this.wsClient = new WSClient(host, port).connect();
+      this.log.info('Connected to websocket');
     } catch (e) {
       throw new Error(`Cannot connect to websocket: ${e}`);
     }
 
     this.api.on(APIEvent.DID_FINISH_LAUNCHING, () => {
-      log.debug('Executed didFinishLaunching callback');
+      this.log.debug('Executed didFinishLaunching callback');
 
       this.discoverDevices();
     });
@@ -72,7 +78,7 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
     for (const rollerShutter of rollerShutters) {
       const uuid = this.api.hap.uuid.generate(rollerShutter.uniqueId);
 
-      const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
+      const existingAccessory = this.accessories.find((accessory) => accessory.UUID === uuid);
 
       if (existingAccessory) {
         this.log.info('Restoring existing roller shutter from cache:', existingAccessory.displayName);
@@ -94,7 +100,7 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
     for (const multifonctionsModule of nodonMultifonctions) {
       const uuid = this.api.hap.uuid.generate(multifonctionsModule.uniqueId);
 
-      const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
+      const existingAccessory = this.accessories.find((accessory) => accessory.UUID === uuid);
 
       if (existingAccessory) {
         this.log.info('Restoring existing NodOn multifonctions module from cache:', existingAccessory.displayName);
@@ -116,13 +122,10 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
     for (const contactSensor of contactSensors) {
       const uuid = this.api.hap.uuid.generate(contactSensor.uniqueId);
 
-      const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
+      const existingAccessory = this.accessories.find((accessory) => accessory.UUID === uuid);
 
       if (existingAccessory) {
-        this.log.info(
-          'Restoring existing Contact Sensor from cache:',
-          existingAccessory.displayName,
-        );
+        this.log.info('Restoring existing Contact Sensor from cache:', existingAccessory.displayName);
 
         new ContactSensorAccessory(this, existingAccessory);
       } else {
@@ -135,6 +138,20 @@ export class DeconzConverterPlatform implements DynamicPlatformPlugin {
         new ContactSensorAccessory(this, accessory);
 
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
+      }
+    }
+
+    // Remove undeclared accessories
+    for (const accessory of Object.values(this.accessories)) {
+      if (
+        !rollerShutters.find((rollerShutter) => rollerShutter.uniqueId === accessory.context.device.uniqueId) &&
+        !nodonMultifonctions.find(
+          (multifonctionsModule) => multifonctionsModule.uniqueId === accessory.context.device.uniqueId,
+        ) &&
+        !contactSensors.find((contactSensor) => contactSensor.uniqueId === accessory.context.device.uniqueId)
+      ) {
+        this.log.info('Removing undeclared accessory:', accessory.displayName);
+        this.api.unregisterPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
       }
     }
   }
