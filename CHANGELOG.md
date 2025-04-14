@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.5.0 (2025-04-14)
+
+### Added
+
+- Unregister removed accessories from config
+
 ## 0.4.0 (2023-11-18)
 
 ### Added
